@@ -13,7 +13,6 @@ interface LineData {
 }
 
 export const PointsVsLeagueAvgByWeekChart = ({data}: { data: LineData }) => {
-    console.log(data);
     return (
         <div>
             <Line

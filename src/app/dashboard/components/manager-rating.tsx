@@ -389,30 +389,38 @@ export const ManagerRating = async () => {
                     )
                 })}
             </table>
+            <h1> Manager Rating </h1>
+            <p> Manager Rating is a measure of how well you play your best guys in a given week. I had to massage the data so the up and to the right is good here, but basically: down means you didn't play guys that could have won you the matchup, right means you are winning, and big bubble means the other team could have beaten you if they had played the right guys, so you got lucky </p>
             {bubbleData.datasets.length && (<BubbleChart
                 data={bubbleData}
             />)}
             <h1>Points Discrepancy</h1>
+            <p> Points Discrepancy is a measure of points for/points against </p>
             <PointsDiscrepancyChart
                 data={getPointsDiscrepancyData()}
             />
             <h1>Points Differential</h1>
+            <p> Points Differential is a measure of points for - points against. I included the avg points scored against you so you could get a feel for whether you played hard teams </p>
             <PointsDifferentialChart
                 data={getPointsDifferentialData()}
             />
             <h1>Total Transactions</h1>
+            <p> Total Transactions is a measure of how many transactions (trades, drops, waiver pickups) you made. </p>
             <TransactionTotalsChart
                 data={getTotalTransactionsData()}
             />
             <h1>Transactions By Week</h1>
+            <p> Transactions By Week is a measure of how many transactions (trades, drops, waiver pickups) you made by week. </p>
             <TransactionsByWeekChart
                 data={getTransactionsByWeekData()}
             />
             <h1>Points Per Transaction</h1>
+            <p> Points Per Transaction is a rough measure of how effective your transactions have been. More expected points per transaction means that your moves are netting points, negative means that your are netting less points that you would have if you kept your other players. </p>
             <PointsPerTransactionChart
                 data={getPointsPerTransactionData()}
             />
             <h1>Points vs League Avg</h1>
+            <p> Points vs League Avg is a measure of how many points you scored compared to the league average. Points are wins, X's are losses. X's above the white lines are matchups that you would have won if you played the league average, but unfortunately your opponent went off</p>
             <PointsVsLeagueAvgByWeekChart
                 data={getPointsVsLeagueAvgData()}
             />
