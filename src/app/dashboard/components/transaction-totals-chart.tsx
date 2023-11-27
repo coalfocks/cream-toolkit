@@ -5,7 +5,6 @@ Chart.register(...registerables);
 
 interface doughnutData {
     datasets: {
-        label: string;
         data: number[];
     }[];
     labels: string[];

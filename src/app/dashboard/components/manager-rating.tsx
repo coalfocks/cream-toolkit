@@ -53,7 +53,7 @@ export const ManagerRating = async () => {
     const bestLineups: {[key: number]: any} = {};
     const teams: {[key: number]: any} = {};
     const fetchTeams = async () => {
-        const fetchedTeams = await client.getTeamsAtWeek(seasonId, week);
+        const fetchedTeams: any[] = await client.getTeamsAtWeek(seasonId, week);
         fetchedTeams.map((team) => {
             teams[team.id] = {
                 name: team.name,
@@ -74,7 +74,7 @@ export const ManagerRating = async () => {
 
     const results: {[key: number]: Results} = {};
     for (let i = 1; i <= week; i++) {
-        const matchups = await client.getBoxscoreForWeek(seasonId, i);
+        const matchups: any[] = await client.getBoxscoreForWeek(seasonId, i);
         matchups.map((matchup) => {
             pointsVsLeagueAvgAnalysis.handleMatchupForWeek(matchup, i);
             bestLineups[matchup.awayTeamId] = Optimizer.analyzeLineup(matchup.awayRoster, matchup.awayScore);
@@ -184,7 +184,7 @@ export const ManagerRating = async () => {
         })),
     };
 
-    const getRating = results => {
+    const getRating = (results: any) => {
         const deservedWin = results.deservedWin;
         const luckyWin = results.luckyWin;
         const deservedLoss = results.deservedLoss;
@@ -276,7 +276,7 @@ export const ManagerRating = async () => {
                 type: 'bar',
                 label: 'Points Per Transaction',
                 data: sortedKeys.map((teamId) => {
-                    const teamTransactions = transactions.getTeamTransactionsByWeek(parseInt(teamId));
+                    const teamTransactions = transactions.getTeamTransactionsByWeek(teamId);
                     const avgPoints = teams[parseInt(teamId)].pointsFor / week;
                     const pointsPerTransaction = [];
                     for (let i = 0; i < week; i++) {
@@ -305,19 +305,22 @@ export const ManagerRating = async () => {
         const sortedKeys = Object.keys(teams).sort((a, b) => parseInt(a) - parseInt(b));
         // object mapping teamid to random background color
         const backgroundColors = Object.keys(teams).reduce((acc, teamId) => {
+            //@ts-ignore
             acc[teamId] = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.8)`;
             return acc;
         }, {});
 
         const averages = pointsVsLeagueAvgAnalysis.calculateLeagueAvgForWeek();
-        const datasets = [];
+        const datasets: any[] = [];
         sortedKeys.forEach((teamId) => {
             const dataset = {
                 type: 'scatter',
                 data: [],
                 pointStyle: [],
                 label: teams[parseInt(teamId)].name,
+                //@ts-ignore
                 backgroundColor: backgroundColors[teamId],
+                //@ts-ignore
                 borderColor: backgroundColors[teamId],
                 borderWidth: 2,
                 radius: 5,
@@ -332,7 +335,9 @@ export const ManagerRating = async () => {
                     y: results.points,
                 });
             }
+            //@ts-ignore
             dataset.pointStyle = pointStyles;
+            //@ts-ignore
             dataset.data = data;
             datasets.push(dataset);
         });
@@ -360,70 +365,74 @@ export const ManagerRating = async () => {
     }
 
     return(
-        <div>
-            <h1>Manager Ratings</h1>
-            <table>
-                <tr>
-                    <th style={{ padding: '16px' }}>Team</th>
-                    <th style={{ padding: '16px' }}>Deserved Wins</th>
-                    <th style={{ padding: '16px' }}>Lucky Wins</th>
-                    <th style={{ padding: '16px' }}>Deserved Losses</th>
-                    <th style={{ padding: '16px' }}>Blown Losses</th>
-                    <th style={{ padding: '16px' }}>Rating</th>
-                </tr>
-                { Object.keys(results).sort((a, b) => {
-                    const ratingA = getRating(results[a]);
-                    const ratingB = getRating(results[b]);
-                    return ratingB - ratingA;
-                }).map((key) => {
-                    const id = parseInt(key);
-                    return(
-                        <tr>
-                            <td style={{ padding: '16px' }}>{teams[id].name}</td>
-                            <td style={{ padding: '16px' }}>{results[id].deservedWin}</td>
-                            <td style={{ padding: '16px' }}>{results[id].luckyWin}</td>
-                            <td style={{ padding: '16px' }}>{results[id].deservedLoss}</td>
-                            <td style={{ padding: '16px' }}>{results[id].blownLoss}</td>
-                            <td style={{ padding: '16px' }}>{getRating(results[id])}</td>
-                        </tr>
-                    )
-                })}
-            </table>
-            <h1> Manager Rating </h1>
-            <p> Manager Rating is a measure of how well you play your best guys in a given week. I had to massage the data so the up and to the right is good here, but basically: down means you didn't play guys that could have won you the matchup, right means you are winning, and big bubble means the other team could have beaten you if they had played the right guys, so you got lucky </p>
-            {bubbleData.datasets.length && (<BubbleChart
-                data={bubbleData}
-            />)}
-            <h1>Points Discrepancy</h1>
-            <p> Points Discrepancy is a measure of points for/points against </p>
-            <PointsDiscrepancyChart
-                data={getPointsDiscrepancyData()}
-            />
-            <h1>Points Differential</h1>
-            <p> Points Differential is a measure of points for - points against. I included the avg points scored against you so you could get a feel for whether you played hard teams </p>
-            <PointsDifferentialChart
-                data={getPointsDifferentialData()}
-            />
-            <h1>Total Transactions</h1>
-            <p> Total Transactions is a measure of how many transactions (trades, drops, waiver pickups) you made. </p>
-            <TransactionTotalsChart
-                data={getTotalTransactionsData()}
-            />
-            <h1>Transactions By Week</h1>
-            <p> Transactions By Week is a measure of how many transactions (trades, drops, waiver pickups) you made by week. </p>
-            <TransactionsByWeekChart
-                data={getTransactionsByWeekData()}
-            />
-            <h1>Points Per Transaction</h1>
-            <p> Points Per Transaction is a rough measure of how effective your transactions have been. More expected points per transaction means that your moves are netting points, negative means that your are netting less points that you would have if you kept your other players. </p>
-            <PointsPerTransactionChart
-                data={getPointsPerTransactionData()}
-            />
-            <h1>Points vs League Avg</h1>
-            <p> Points vs League Avg is a measure of how many points you scored compared to the league average. Points are wins, X's are losses. X's above the white lines are matchups that you would have won if you played the league average, but unfortunately your opponent went off</p>
-            <PointsVsLeagueAvgByWeekChart
-                data={getPointsVsLeagueAvgData()}
-            />
-        </div>
+        <>
+            <div>
+                <h1>Manager Ratings</h1>
+                <table>
+                    <tr>
+                        <th style={{ padding: '16px' }}>Team</th>
+                        <th style={{ padding: '16px' }}>Deserved Wins</th>
+                        <th style={{ padding: '16px' }}>Lucky Wins</th>
+                        <th style={{ padding: '16px' }}>Deserved Losses</th>
+                        <th style={{ padding: '16px' }}>Blown Losses</th>
+                        <th style={{ padding: '16px' }}>Rating</th>
+                    </tr>
+                    { Object.keys(results).sort((a, b) => {
+                        //@ts-ignore
+                        const ratingA = getRating(results[a]);
+                        //@ts-ignore
+                        const ratingB = getRating(results[b]);
+                        return ratingB - ratingA;
+                    }).map((key) => {
+                        const id = parseInt(key);
+                        return(
+                            <tr>
+                                <td style={{ padding: '16px' }}>{teams[id].name}</td>
+                                <td style={{ padding: '16px' }}>{results[id].deservedWin}</td>
+                                <td style={{ padding: '16px' }}>{results[id].luckyWin}</td>
+                                <td style={{ padding: '16px' }}>{results[id].deservedLoss}</td>
+                                <td style={{ padding: '16px' }}>{results[id].blownLoss}</td>
+                                <td style={{ padding: '16px' }}>{getRating(results[id])}</td>
+                            </tr>
+                        )
+                    })}
+                </table>
+                <h1> Manager Rating </h1>
+                <p> Manager Rating is a measure of how well you play your best guys in a given week. I had to massage the data so the up and to the right is good here, but basically: down means you didn't play guys that could have won you the matchup, right means you are winning, and big bubble means the other team could have beaten you if they had played the right guys, so you got lucky </p>
+                {bubbleData.datasets.length && (<BubbleChart
+                    data={bubbleData}
+                />)}
+                <h1>Points Discrepancy</h1>
+                <p> Points Discrepancy is a measure of points for/points against </p>
+                <PointsDiscrepancyChart
+                    data={getPointsDiscrepancyData()}
+                />
+                <h1>Points Differential</h1>
+                <p> Points Differential is a measure of points for - points against. I included the avg points scored against you so you could get a feel for whether you played hard teams </p>
+                <PointsDifferentialChart
+                    data={getPointsDifferentialData()}
+                />
+                <h1>Total Transactions</h1>
+                <p> Total Transactions is a measure of how many transactions (trades, drops, waiver pickups) you made. </p>
+                <TransactionTotalsChart
+                    data={getTotalTransactionsData()}
+                />
+                <h1>Transactions By Week</h1>
+                <p> Transactions By Week is a measure of how many transactions (trades, drops, waiver pickups) you made by week. </p>
+                <TransactionsByWeekChart
+                    data={getTransactionsByWeekData()}
+                />
+                <h1>Points Per Transaction</h1>
+                <p> Points Per Transaction is a rough measure of how effective your transactions have been. More expected points per transaction means that your moves are netting points, negative means that your are netting less points that you would have if you kept your other players. </p>
+                <PointsPerTransactionChart
+                    data={getPointsPerTransactionData()}
+                />
+                <h1>Points vs League Avg</h1>
+                <p> Points vs League Avg is a measure of how many points you scored compared to the league average. Points are wins, X's are losses. X's above the white lines are matchups that you would have won if you played the league average, but unfortunately your opponent went off</p>
+                <PointsVsLeagueAvgByWeekChart
+                    data={getPointsVsLeagueAvgData()}
+                />
+            </div>
+        </>
     )
 }

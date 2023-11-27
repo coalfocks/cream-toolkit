@@ -42,14 +42,14 @@ export class Transactions {
         return this.teams;
     }
 
-    public getTeamTransactionsByWeek(teamId: number) {
-        const team = this.teams[teamId];
+    public getTeamTransactionsByWeek(teamId: string) {
+        const team = this.teams[parseInt(teamId)];
         const transactionsByWeek = _.omit(team, ['totalTransactions', 'currentLineup']);
-        return Object.keys(transactionsByWeek).sort().map((week) => transactionsByWeek[week]);
+        return Object.keys(transactionsByWeek).sort().map((week) => transactionsByWeek[parseInt(week)]);
     }
 
-    public getTeamTotalTransactions(teamId: number) {
-        return this.teams[teamId].totalTransactions;
+    public getTeamTotalTransactions(teamId: string) {
+        return this.teams[parseInt(teamId)].totalTransactions;
     }
 }
 

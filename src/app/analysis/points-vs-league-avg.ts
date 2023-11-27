@@ -5,7 +5,7 @@ interface LeagueScoring {
 }
 
 interface WeekScore {
-    [key: number]: {
+    [key: string]: {
         points: number;
         win: boolean;
     };
