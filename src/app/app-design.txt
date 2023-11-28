@@ -1,10 +1,24 @@
-manager rating - best possible with team
+[x] manager rating - best possible with team
 waiver ratings - points gained vs lost
+   [x] who was a waiver hawk, who wasnt
+    points dropped vs points gained from wire
+    points traded away vs points gained from trade (hard with position needs)
+[x] expected points per transaction relative to average
+[x] total transactions per team
+points per week compared to league week average
+    avg points compared to league avg
+    [x] plot points per week, league avg, win or loss
+most injuries/points lost to injuries
+points by position breakdown (radar chart)
+    also points by position by quartiles
+actual points compared to espn projected points - which managers exceeded expectations
+who drafted best, most gems
+[x] scored vs scored against
 waiver automation
 lineup automation
 pickems automation
 trade automation
 analysis
 trend
-rank skill vs luck
-unlucky losses vs lucky wins
+
+[x] get week dynamically (mathcup and scoring period found in draftsettings object)

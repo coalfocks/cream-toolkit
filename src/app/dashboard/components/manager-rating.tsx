@@ -9,6 +9,7 @@ import { TransactionTotalsChart } from './transaction-totals-chart';
 import { TransactionsByWeekChart } from './transactions-by-week-chart';
 import { PointsPerTransactionChart } from "./points-per-transaction";
 import { PointsVsLeagueAvgByWeekChart } from "./points-vs-avg-by-week-chart";
+import { PointsVsAvgDifferentialChart } from "./points-vs-avg-differential-chart";
 
 export const ManagerRating = async () => {
     // get games for season
@@ -364,6 +365,20 @@ export const ManagerRating = async () => {
         return data;
     }
 
+    const getPointDifferentialVsLeagueAvgData = () => {
+        const sortedKeys = Object.keys(teams).sort((a, b) => parseInt(a) - parseInt(b));
+        const data = {
+            labels: sortedKeys.map((teamId) => teams[parseInt(teamId)].name),
+            datasets: [{
+                data: sortedKeys.map((teamId) => pointsVsLeagueAvgAnalysis.getScoresVsAverageDifferential(teamId)),
+                backgroundColor: Object.keys(teams).map(t => `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.6)`),
+            }],
+        };
+        return data;
+    }
+
+        
+
     return(
         <>
             <div>
@@ -431,6 +446,11 @@ export const ManagerRating = async () => {
                 <p> Points vs League Avg is a measure of how many points you scored compared to the league average. Points are wins, X's are losses. X's above the white lines are matchups that you would have won if you played the league average, but unfortunately your opponent went off</p>
                 <PointsVsLeagueAvgByWeekChart
                     data={getPointsVsLeagueAvgData()}
+                />
+                <h1>Point Differential vs League Avg</h1>
+                <p>Point Differential vs League Avg is a measure of how many points you score relative to the league average, over the course of the season. </p>
+                <PointsVsAvgDifferentialChart
+                    data={getPointDifferentialVsLeagueAvgData()}
                 />
             </div>
         </>
