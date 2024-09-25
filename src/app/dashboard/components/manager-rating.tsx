@@ -47,7 +47,7 @@ export const ManagerRating = async () => {
     }
 
     const client = new FantasyClient();
-    const seasonId = 2023;
+    const seasonId = 2024;
     const { currentScoringPeriodId, currentMatchupPeriodId } = await client.getCurrentWeek(seasonId);
     const week = currentScoringPeriodId;
 
