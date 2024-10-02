@@ -4,6 +4,9 @@ import { Client } from 'espn-fantasy-football-api/node';
 export class FantasyClient {
     private readonly client: Client;
     constructor() {
+        console.log('league id', process.env.LEAGUE_ID);
+        console.log('espn s2', process.env.ESPN_S2);
+        console.log('swid', process.env.SWID);
         this.client = new Client({
             leagueId: process.env.LEAGUE_ID,
         });
@@ -32,7 +35,9 @@ export class FantasyClient {
 
     public async getCurrentWeek(year: number) {
         try {
+            console.log('getting current week');
             const leagueInfo = await this.client.getLeagueInfo({ seasonId: year});
+            console.log('league info', leagueInfo);
             const { currentScoringPeriodId, currentMatchupPeriodId } = leagueInfo;
             return {
                 currentScoringPeriodId,
@@ -40,6 +45,8 @@ export class FantasyClient {
             };
         } catch (e) {
             console.log('error getting current week', e);
+            const leagueInfo = await this.client.getLeagueInfo({ seasonId: year});
+            console.log('league info', leagueInfo);
             return {
                 currentScoringPeriodId: 11,
                 currentMatchupPeriodId: 11,

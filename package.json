@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "chart.js": "^4.4.0",
-    "espn-fantasy-football-api": "^2.0.0",
+    "espn-fantasy-football-api": "https://github.com/coalfocks/ESPN-Fantasy-Football-API",
     "lodash": "^4.17.21",
     "next": "14.0.3",
     "react": "^18",
